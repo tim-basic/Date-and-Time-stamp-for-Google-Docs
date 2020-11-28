@@ -12,10 +12,9 @@
  */
 function onOpen() {
   // Add a menu with some items, some separators, and a sub-menu.
-  DocumentApp.getUi()
-    .createMenu("Utilities")
-    .addItem("Insert Date", "insertAtCursor")
-    .addToUi();
+  DocumentApp.getUi().createMenu('Utilities')
+      .addItem('Insert Date', 'insertAtCursor')
+      .addToUi();
 }
 
 /**
@@ -27,21 +26,30 @@ function insertAtCursor() {
   if (cursor) {
     // Attempt to insert text at the cursor position. If insertion returns null,
     // then the cursor's containing element doesn't allow text insertions.
-    var date = new Date().toLocaleDateString("default", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    }); // use your local (browser) date format with month name
-    date += " - " + new Date().toLocaleTimeString();
-    var element = cursor.insertText(date);
+    var date = (new Date).toLocaleDateString('default', {  weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }); // use your local (browser) date format with month name
+    date += " - " + (new Date).toLocaleTimeString();
+    var element = cursor.insertText(date + '\n\n');
     if (element) {
       element.setBold(true);
       element.setUnderline(true);
     } else {
-      DocumentApp.getUi().alert("Cannot insert text at this cursor location.");
+      DocumentApp.getUi().alert('Cannot insert text at this cursor location.');
+    }
+    
+    var doc = DocumentApp.getActiveDocument();
+    var position = doc.newPosition(element, element.getText().length);
+    doc.setCursor(position);
+    
+    var undoStyles = '';
+    element = cursor.insertText(undoStyles);
+      if (element) {
+      element.setBold(false);
+      element.setUnderline(false);
+    } else {
+      DocumentApp.getUi().alert('Cannot insert text at this cursor location.');
     }
   } else {
-    DocumentApp.getUi().alert("Cannot find a cursor in the document.");
+    DocumentApp.getUi().alert('Cannot find a cursor in the document.');
   }
+  
 }
